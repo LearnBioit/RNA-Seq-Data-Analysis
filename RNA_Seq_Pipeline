@@ -157,19 +157,19 @@ Example Table of Gene Counts
 Gene	Sample 1 Counts	Sample 2 Counts	Sample 3 Counts
 A (2kb)	10	           12	            30
 B (4kb)	20	           25	            60
-C (1kb)	5             	8	            15
-D (10kb)	0           	0	             1
-Total Reads	35	       45	            106
-Scaling Factor	3.5  	4.5           	10.6
+C (1kb)	5             	    8	            15
+D (10kb) 0           	    0	             1
+Total Reads	35	    45	            106
+Scaling Factor	3.5  	   4.5             10.6
 
 Divide the Read Count by the "Per Million" Scaling Factor:
 After calculating the scaling factor, divide the raw read counts by this value to obtain normalized counts.
 Example Normalized Counts (RPM)
 Gene	Sample 1 RPM	Sample 2 RPM	Sample 3 RPM
-A (2kb) 	2.86	       2.67	        2.83
-B (4kb)	5.71	         5.56       	5.66
-C (1kb)	1.43	         1.78	        1.43
-D (10kb)	0	           0	          0.09
+A (2kb)    2.86	               2.67	        2.83
+B (4kb)	   5.71	               5.56       	5.66
+C (1kb)	   1.43	               1.78	        1.43
+D (10kb)    0	               0	        0.09
 
 Normalize for Gene Length:
 After obtaining RPM values, divide these by the length of each gene in kilobases to achieve length normalization.
@@ -178,7 +178,7 @@ Gene	Sample 1 RPKM	Sample 2 RPKM	Sample 3 RPKM
 A (2kb)	1.43	1.33	1.42
 B (4kb)	1.43	1.39	1.42
 C (1kb)	1.43	1.79	1.42
-D (10kb)	0	0	0.009
+D (10kb) 0	0	0.009
 Comparison of RPKM, FPKM, and TPM
 FPKM (Fragments Per Kilobase Million) is similar to RPKM but is specifically used for paired-end RNA-Seq data. In paired-end sequencing, two reads correspond to a single fragment, 
 and FPKM counts fragments rather than individual reads.
