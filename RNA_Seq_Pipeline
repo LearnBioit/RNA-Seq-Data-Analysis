@@ -196,11 +196,12 @@ Example of Library Composition
 Gene	Sample 1 Counts	Sample 2 Counts
 A	    30	         235
 B	    24	        188
-C	    0           	0
+C	    0            0
 D	   563	          0
 E	     5	         39
 F	    13	         102
-Total Reads	635	  635
+Total Reads	635	 635
+
 In this example, both samples have the same total library size of 635 reads. However, Sample 1 has a high level of transcription for Gene D (563 reads), 
 while Gene D is not transcribed in Sample 2. This discrepancy highlights the importance of considering library composition when interpreting RNA-Seq data. 
 This comprehensive overview includes the normalization processes, examples, and considerations for RNA-Seq analysis, providing a clear understanding of how to handle and interpret the data.
@@ -232,15 +233,15 @@ The normalization process involves several steps, starting with the log transfor
 
 Gene	Sample 1	Sample 2	Sample 3
 A	       0	     10        	4
-B	      2       	6	        12
-C	      33     	55	        200
+B	      2       	     6	        12
+C	      33     	    55	        200
 
 The log transformation yields:
 
 Gene	Log(Sample 1)	Log(Sample 2)	Log(Sample 3)
-A	      -inf	         2.3	          1.4
-B      	0.7	           1.8	          2.5
-C       3.5	           4.0	          5.3
+A	-inf	           2.3	          1.4
+B        0.7	           1.8	          2.5
+C        3.5	           4.0	          5.3
 
 Next, the geometric average of the log values for each gene is calculated:
 
@@ -256,27 +257,27 @@ C	         4.3
 
 Subsequently, the average log value is subtracted from the log counts:
 Gene	Log(Sample 1)	Log(Sample 2)	Log(Sample 3)
-B	     -1.0	           0.1	         0.5
-C    	-0.8	          -0.3	         1.3
+B	  -1.0	           0.1	         0.5
+C    	  -0.8	          -0.3	         1.3
 
 This subtraction effectively divides the counts by the average, allowing for a more accurate comparison. The median of these ratios is then calculated for each sample:
 
 Gene	Log(Sample 1)	Log(Sample 2)	Log(Sample 3)
 B	      -1.0	         0.1	         0.5
 C	      -0.8	        -0.3	         1.3
-Median	-0.9        	-0.1         	 0.9
+Median	      -0.9        	-0.1         	 0.9
 
 The median is used to minimize the influence of extreme values, emphasizing moderately expressed genes. The scaling factors are computed by taking the exponential of these medians:
 
-Gene	        Sample 1	     Sample 2   	Sample 3
+Gene	        Sample 1     Sample 2   	Sample 3
 Median	        -0.9	        -0.1	         0.9
 Scaling Factors	 0.4	         0.7	         2.5
 
 Finally, the normalized counts are obtained by dividing the original counts by the scaling factors:
-Gene	Sample 1	Sample 2	Sample 3
-A	       0	      17	       2
-B	       5       	9          5
-C	      83	     79	         80
+Gene	    Sample 1	   Sample 2	Sample 3
+A	       0	      17	  2
+B	       5              9           5
+C	      83	      79	 80
 
 This normalization process allows for a more reliable comparison of gene expression levels across different samples, facilitating the identification of differentially expressed genes. 
 Overall, DESeq2 effectively manages the complexities of RNA-Seq data analysis, providing researchers with robust statistical tools to interpret their findings.
