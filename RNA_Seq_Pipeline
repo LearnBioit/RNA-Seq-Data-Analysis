@@ -1,0 +1,340 @@
+                                                       ### RNA SEQUENCING DATA ANALYSIS ###
+
+The central dogma of molecular biology describes the flow of genetic information from DNA to RNA to proteins, 
+which ultimately shape an organism's characteristics, known as its phenotype. 
+This process involves two key steps: transcription, where specific genes are copied into RNA, and translation, 
+where this RNA is used to synthesize proteins. The transcriptome, which is the complete set of RNA molecules in a cell at any given time, 
+plays a crucial role in defining a cell's identity and regulating its biological functions. 
+Understanding the transcriptome provides valuable insights into how genes are expressed, how cells develop, and the underlying causes of various diseases,
+paving the way for potential new treatments and therapies.
+
+RNA molecules were traditionally viewed as simple intermediates between genes and proteins, as described in the central dogma of molecular biology.
+Consequently, messenger RNA (mRNA) molecules have been the most extensively studied type of RNA because they carry the genetic information needed to encode proteins through the genetic code.
+
+#RNA-SEQ:
+"""
+RNA sequencing (RNA-SEQ) uses the capabilities of high-throughtput sequecning methods to provide insight into the transcriptome of a cell. Compared to previous Sanger sequecing And 
+microarray-based mehtods, RNA-SEq provides far higher coverage and greater resolution of the dynamic nature of the transcriptome .Beyond quantifying gene expression, the data genrated by RNA-SEQ 
+facilities the discovery of novel transcripts, identification of alternatively spliced genes, and detection of allele-specifie expression. Recent advances in the RNA-seQ WORKFLOW HAVE 
+enables researchers to further elucidate the functional complexity of the transcription. This techmological development eliminated many challanges posed  by hybridization-based 
+microarrays and sanger  sequecning based approaches that were previously used for measuring gene expression. A typical RNA-SEQ experiment consists of isolating RNA, 
+converting it to complementary DNA (cDNA), PREPARING THE SEQUECNING LIBRARY, and sequencing it on an NGS platform. All RNA-Seq library preparation methods involve the conversion of RNA to 
+complementary DNA (cDNA) because most sequencing technologies require DNA libraries. Most protocols for cDNA synthesis create libraries that are uniformly derived from each cDNA strand,
+thus representing both the parent mRNA strand and its complement.
+
+#Data Analysis Workflow_RNA Sequencing (RNA_Seq)
+Conventional pipelines for RNA-Seq data involve several key steps, starting with the generation of FASTQ-format files that contain the sequenced reads from a next-generation sequencing (NGS) platform. 
+These reads are then aligned to an annotated reference genome, followed by quantifying gene expression. Mapping RNA-Seq reads to the genome is more complex than mapping DNA sequencing reads because 
+many RNA reads span splice junctions. As a result, traditional read mapping algorithms like Bowtie and BWA are not suitable for RNA-Seq data due to their inability to accurately handle spliced transcripts. 
+Instead, a better approach is to use "splicing-aware" aligners that can differentiate between reads that align across exon-intron boundaries and those with short insertions.
+
+The commonly used RNA-Seq alignment tools include GSNAP, MapSplice, RUM, STAR, and TopHat. Each aligner has different advantages in terms of performance, speed, and memory utilization.
+At each stage in the RNA-Seq analysis pipelines, careful consideration should be applied to identifying and correcting for various sources of bias. Bias can arise throughout the RNA-Seq
+experiment pipelines, including during RNA extraction, sample preparation, library construction, sequencing, and read mapping.
+
+# The some key points about these RNA-Seq aligners:
+GSNAP, MapSplice, and RUM are among the most viable options for RNA-Seq alignment, with high base-wise accuracy and splice junction detection
+STAR and TopHat2 perform similarly, aligning a large percentage of reads (94% and 71% respectively)
+GSNAP exhibits lower precision at lower detection thresholds
+MapSplice shows unusual non-monotonic and non-saturating behavior
+TopHat2 correctly aligned more than 98% of reads, higher than other methods (88-97%)
+GSNAP, RUM, and STAR had difficulty aligning short-anchored reads
+In Nutshell, while TopHat is the most popular RNA-Seq aligner, several alternatives exist with their own strengths. 
+Careful consideration of potential biases is crucial at every step of the analysis pipeline to ensure accurate results.
+
+A primary goal of many gene expression experiments
+is to identify transcriptions that exhibit differential expression across different conditions. 
+To achieve this, extensive statistical methods have been developed to test for differential expression and to remove biases. 
+Differential gene expression (DGE) analysis involves several steps, starting with the normalization of count data to account for variations in library sizes and RNA composition between samples. 
+This normalization is crucial for making accurate comparisons of gene expression. After normalization, statistical tests are applied to determine which genes show significant changes in 
+expression levels between conditions. Various tools and methods, such as edgeR, DESeq2, and linear mixed models, are used to analyze RNA-Seq data, each with its own advantages in handling different 
+types of data and experimental designs. Bias can arise at multiple stages of the RNA-Seq process, including during RNA extraction, sample preparation, and sequencing, making it essential to address 
+these issues to ensure reliable results.
+"""
+
+""""""""""""""""""""""""
+###################### Uploading Samples to Galaxy #########################
+When using the Galaxy platform for RNA-Seq analysis, the first step is to upload your samples. This involves uploading annotated gene sequences as well as the corresponding samples in pairs, 
+specifically the forward and reverse sequences.
+
+################################  Grooming ##################################
+After uploading the files, the next step is grooming the sample files using the FASTQC Groomer tool. Grooming is essential for preparing the data for analysis. 
+This process converts the FASTQ files into a basic output format, either in Sanger or Color Space Sanger (csSanger) format. This conversion ensures that the data is in a standardized 
+format suitable for subsequent analysis.
+############################ FASTQC ###########################################
+Following grooming, it is important to perform quality control (QC) on the groomed data using the FASTQC tool. This step assesses the quality of the sequencing data, 
+providing insights into various metrics such as read quality scores, GC content, and the presence of any potential sequencing artifacts. By evaluating these quality metrics, 
+researchers can identify any issues with the data that may need to be addressed
+before proceeding with further analysis.
+
+## FOR MAPPING #
+
+RNA-STAR is an ultrafast, universal RNA-Seq aligner that facilitates the mapping and annotation of RNA sequences against a reference genome. 
+The alignment process can be summarized in the following steps:
+
+##RNA-STAR Overview: 
+RNA-STAR serves as a universal RNA-Seq aligner designed for efficient mapping of RNA sequences.
+
+##Select Paired-End Datasets: 
+When setting up the analysis, choose paired-end as the type of dataset to ensure that both forward and reverse reads are processed together.
+
+##Choose RNA-Seq FASTQ Files: 
+Select the RNA-Seq FASTQ files for alignment. These files can be used with or without trimming, depending on the quality of the sequences.
+
+##Use Built-in Index: 
+Utilize the built-in index for the reference genome, which allows for faster alignment by avoiding the need to create a new index from scratch.
+	
+##Reference Genome: 
+Specify the reference genome to be used, ensuring it does not include a built-in gene model, which can complicate the mapping process.
+
+##Select Human Genome: 
+Choose the human genome reference, specifically the hg19 version (Homo sapiens b37), to align the RNA sequences accurately.
+
+##Set Length and Execute: 
+Set the read length to 100, keeping other parameters unchanged, and execute the alignment process.
+After completing the RNA-STAR analysis, three output files will be generated: a log file, a splice junction BED file, and a BAM file. 
+These files are essential for further analysis, such as HT-Seq processing, which quantifies gene expression levels based on the aligned reads.
+
+BAM (Binary Alignment Map) is a compressed binary format that retains the same information as the SAM (Sequence Alignment Map) format but in a more compact size, 
+making it preferable for data storage and processing. While SAM files are human-readable, BAM files are not, which is why BAM is often chosen for large-scale sequencing projects. 
+The BAM format allows for efficient storage and fast retrieval of sequence alignments, as it is designed to support indexing that enables quick access to specific locations in 
+the data without needing to scan the entire file.
+
+Mapped gene sequences can be visualized by uploading BAM files to various tools, including:
+##IGV (Integrated Genome Viewer): A widely used tool for visualizing genomic data, allowing users to explore the alignment of reads against a reference genome.
+##UCSC Genome Browser: A comprehensive web-based tool that provides access to genomic data and allows for the visualization of BAM files alongside other genomic annotations.
+##Galaxy Visualization: A platform that facilitates the analysis and visualization of next-generation sequencing (NGS) data, including BAM files, enabling users to conduct various bioinformatics 
+analyses. These visualization tools help researchers interpret the alignment data contained within BAM files, facilitating the analysis of gene expression and other genomic features.
+
+"""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""
+############################## HT-Seq Count Analysis of the Sample ###############################
+HT-Seq Count is a tool designed to analyze RNA-Seq data by quantifying the number of reads that map to specific features within a genome. It requires an alignment file in either SAM or BAM format
+and a feature file in GFF format (a standard tabular format used in GenBank). The tool utilizes the htseq-count script, which is part of the HTSeq Python module, to perform the analysis.
+In this context, a "feature" refers to an interval on a chromosome, which can be a single range of positions or a union of multiple intervals. For RNA-Seq analysis, features are typically genes,
+with each gene represented as the union of all its exons. The primary purpose of this tool is to quantify gene expression, providing insights into transcript abundance and the quantity of 
+each gene that is expressed.
+Key Features of HT-Seq Count:
+Tool: htseq-count counts aligned reads in a BAM file that overlap with features defined in a GFF file.
+Output: The tool generates expression counts for each gene, indicating how many reads correspond to each gene's features.
+
+Example:
+For instance, if the gene AES is located on chromosome 19, the expression count might be reported as 2662, indicating that 2662 reads mapped to this gene. 
+The output includes Gene IDs for sequences mapped to specific chromosome locations, allowing researchers to understand the expression levels of individual genes within their samples. 
+This information is crucial for further analysis of gene function and regulation in various biological contexts.
+
+####### Different Normalisation Process:
+To address the potential biases in read counts generated by HT-Seq, several normalization processes are commonly used. 
+These normalization methods aim to account for differences in sequencing depth between samples and gene length variations. 
+The goal is to obtain a more accurate representation of gene expression levels by adjusting the raw read counts.
+
+Some of the most widely used normalization processes include:
+##RPK (Reads Per Kilobase): This method normalizes the read counts based on gene length, accounting for the fact that longer genes tend to have more reads mapped to them.
+##FPKM (Fragments Per Kilobase Million): FPKM is an extension of RPK that also considers the sequencing depth of the sample. 
+It normalizes the read counts based on both gene length and the total number of sequenced fragments in millions.
+
+##TPM (Transcripts Per Million): TPM is another normalization method that adjusts the read counts based on gene length and sequencing depth. 
+It provides a more intuitive interpretation of gene expression levels compared to FPKM.
+To calculate RPKM, a scaling factor is determined to normalize the data for both sequencing depth (the "Million" part) and gene length (the "kilobase" part). 
+This scaling factor is then applied to the raw read counts to obtain the normalized expression values.
+By using these normalization processes, researchers can better compare gene expression levels across different samples and conditions, as well as identify differentially expressed genes more accurately.
+
+
+
+To normalize read counts and address potential biases in RNA-Seq data, several methods are commonly used, such as RPM (Reads Per Million), RPKM (Reads Per Kilobase Million), 
+FPKM (Fragments Per Kilobase Million), and TPM (Transcripts Per Million). These normalization techniques aim to account for differences in sequencing depth between samples
+and variations in gene length.
+
+Normalization Process
+Compute the "Per Million" Scaling Factor:
+To calculate the scaling factor, sum the total reads in a sample and divide that number by 1,000,000.
+Total Reads Calculation:
+The total reads for each sample can be calculated by summing the counts for all genes.
+Example Table of Gene Counts
+Gene	Sample 1 Counts	Sample 2 Counts	Sample 3 Counts
+A (2kb)	10	           12	            30
+B (4kb)	20	           25	            60
+C (1kb)	5             	8	            15
+D (10kb)	0           	0	             1
+Total Reads	35	       45	            106
+Scaling Factor	3.5  	4.5           	10.6
+
+Divide the Read Count by the "Per Million" Scaling Factor:
+After calculating the scaling factor, divide the raw read counts by this value to obtain normalized counts.
+Example Normalized Counts (RPM)
+Gene	Sample 1 RPM	Sample 2 RPM	Sample 3 RPM
+A (2kb) 	2.86	       2.67	        2.83
+B (4kb)	5.71	         5.56       	5.66
+C (1kb)	1.43	         1.78	        1.43
+D (10kb)	0	           0	          0.09
+
+Normalize for Gene Length:
+After obtaining RPM values, divide these by the length of each gene in kilobases to achieve length normalization.
+Example Length Normalized Counts (RPKM)
+Gene	Sample 1 RPKM	Sample 2 RPKM	Sample 3 RPKM
+A (2kb)	1.43	1.33	1.42
+B (4kb)	1.43	1.39	1.42
+C (1kb)	1.43	1.79	1.42
+D (10kb)	0	0	0.009
+Comparison of RPKM, FPKM, and TPM
+FPKM (Fragments Per Kilobase Million) is similar to RPKM but is specifically used for paired-end RNA-Seq data. In paired-end sequencing, two reads correspond to a single fragment, 
+and FPKM counts fragments rather than individual reads.
+
+TPM (Transcripts Per Million) is calculated differently:
+Divide the read counts by the length of each gene in kilobases to obtain RPK (Reads Per Kilobase).
+Divide the RPK values by the "per million" scaling factor.
+This order of operations means that TPM normalizes for gene length first and then for sequencing depth. One of the advantages of TPM is that the sum of all TPMs in each sample is the same,
+making it easier to compare the proportion of reads that mapped to a gene across different samples.
+Library Composition Problem
+
+Another challenge in RNA-Seq analysis is the library composition problem. This issue arises when comparing different tissue types. For example, if muscle-specific genes are highly
+transcribed in muscle tissue but not in epithelial tissue, it can lead to differences in library composition that affect the analysis.
+Example of Library Composition
+Gene	Sample 1 Counts	Sample 2 Counts
+A	    30	         235
+B	    24	        188
+C	    0           	0
+D	   563	          0
+E	     5	         39
+F	    13	         102
+Total Reads	635	  635
+In this example, both samples have the same total library size of 635 reads. However, Sample 1 has a high level of transcription for Gene D (563 reads), 
+while Gene D is not transcribed in Sample 2. This discrepancy highlights the importance of considering library composition when interpreting RNA-Seq data. 
+This comprehensive overview includes the normalization processes, examples, and considerations for RNA-Seq analysis, providing a clear understanding of how to handle and interpret the data.
+
+#################### DESeq2 ##################
+DESeq2 is a widely used software package for determining differential gene expression from RNA-Seq data, taking as input a count table generated from tools like HTSeq-count, 
+where count tables must be created for each sample individually. DESeq2 is designed to handle multiple factors that may influence gene expression, treating the first factor as the primary 
+influence while considering the impact of secondary factors. 
+Differential expression analysis involves performing statistical tests on normalized read count data to identify significant 
+changes in expression levels between experimental groups, accounting for variability using a negative binomial generalized linear model. DESeq2 normalizes the data to ensure valid comparisons 
+between samples and provides an output that includes a list of differentially expressed genes with statistical significance values, allowing researchers to interpret the biological relevance 
+of their findings. The workflow involves inputting count data, constructing a design formula, normalizing and estimating dispersion, performing statistical testing, and interpreting the results, 
+making it a powerful tool for applications such as analyzing gene expression differences between cancer samples and normal tissues.
+
+There are various methods for differential expression analysis, including edgeR and DESeq2, both of which are widely used in RNA-Seq data analysis. 
+It is crucial to consider the experimental design when selecting an analysis method, as some tools may only perform pairwise comparisons while others can handle multiple comparisons. 
+DESeq2 specifically takes count tables generated from HTSeq-count as input and is capable of managing multiple factors that influence gene expression. The primary factor is designated first, 
+with the option to include secondary factors that may also affect the results. The output from DESeq2 reflects changes in gene expression due to the primary factor while accounting for 
+the presence of secondary factors. Differential expression analysis involves utilizing normalized read count data and conducting statistical tests to identify significant differences in expression
+levels between experimental groups. This process helps determine whether observed differences in read counts for a given gene are statistically significant, surpassing what would be expected from 
+random variation. Overall, tools like DESeq2 are essential for accurately determining differentially expressed features from count tables, allowing researchers to draw 
+meaningful conclusions from their data.
+
+DESeq2 is a powerful tool used for analyzing RNA-Seq data and conducting differential gene expression (DGE) analysis. It processes read count files from various samples, combining them into a single table 
+with genes represented in rows and samples in columns. This tool applies normalization to account for sequencing depth and library composition, allowing for a more accurate comparison of gene expression
+across samples. Multiple factors with several levels can be incorporated into the analysis, enabling researchers to statistically assess how gene expression responds to different levels of a primary factor 
+while considering secondary factors.
+The normalization process involves several steps, starting with the log transformation of all read counts. For example, given the following read counts:
+
+Gene	Sample 1	Sample 2	Sample 3
+A	       0	     10        	4
+B	      2       	6	        12
+C	      33     	55	        200
+
+The log transformation yields:
+
+Gene	Log(Sample 1)	Log(Sample 2)	Log(Sample 3)
+A	      -inf	         2.3	          1.4
+B      	0.7	           1.8	          2.5
+C       3.5	           4.0	          5.3
+
+Next, the geometric average of the log values for each gene is calculated:
+
+Gene	 Averages
+A	     -inf
+B	      1.7
+C	      4.3
+
+Genes with infinite values are filtered out, focusing on those with valid read counts across samples:
+Gene	Average of Log Values
+B	         1.7
+C	         4.3
+
+Subsequently, the average log value is subtracted from the log counts:
+Gene	Log(Sample 1)	Log(Sample 2)	Log(Sample 3)
+B	     -1.0	           0.1	         0.5
+C    	-0.8	          -0.3	         1.3
+
+This subtraction effectively divides the counts by the average, allowing for a more accurate comparison. The median of these ratios is then calculated for each sample:
+
+Gene	Log(Sample 1)	Log(Sample 2)	Log(Sample 3)
+B	      -1.0	         0.1	         0.5
+C	      -0.8	        -0.3	         1.3
+Median	-0.9        	-0.1         	 0.9
+
+The median is used to minimize the influence of extreme values, emphasizing moderately expressed genes. The scaling factors are computed by taking the exponential of these medians:
+
+Gene	        Sample 1	     Sample 2   	Sample 3
+Median	        -0.9	        -0.1	         0.9
+Scaling Factors	 0.4	         0.7	         2.5
+
+Finally, the normalized counts are obtained by dividing the original counts by the scaling factors:
+Gene	Sample 1	Sample 2	Sample 3
+A	       0	      17	       2
+B	       5       	9          5
+C	      83	     79	         80
+
+This normalization process allows for a more reliable comparison of gene expression levels across different samples, facilitating the identification of differentially expressed genes. 
+Overall, DESeq2 effectively manages the complexities of RNA-Seq data analysis, providing researchers with robust statistical tools to interpret their findings.
+
+
+Analysis of the Results
+In our example, we have samples that are influenced by two varying factors contributing to differences in gene expression: treatment (either treated or untreated) and sequencing type 
+(paired-end or single-end). In this context, treatment is the primary factor of interest, while the sequencing type serves as additional information that may impact the analysis. 
+Multi-factor analysis enables us to evaluate the effect of the treatment while also considering the influence of the sequencing type.
+The most common approach in comparative transcriptomics analysis is to test the null hypothesis. In this case, the null hypothesis posits that the logarithmic fold change (LFC) in 
+gene expression between the treated and control groups is exactly zero, indicating that the treatment does not affect the gene's expression. The objective of differential analysis is often
+to generate a list of genes that pass multiple testing adjustments, ranked by their P-values. Genes that exhibit significant changes in expression are identified by an adjusted P-valuebelow 0.05 
+when comparing treated and untreated samples. Therefore, genes with an adjusted P-value less than 0.05 should be filtered out to identify differentially expressed genes. To pinpoint the most
+differentially expressed genes resulting from the treatment, it is also necessary to filter for genes with an absolute fold change greater than 2.
+
+
+### The Heatmap
+The heatmap is a visual representation of the sample-to-sample distance matrix, incorporating clustering based on normalized counts. It provides an overview of the similarities and dissimilarities 
+between samples, where the color gradient indicates the distance between them. Dark blue signifies a shorter distance, indicating that the samples are closer 
+to each other based on their normalized counts.
+
+### The PCA Plot
+Principal Component Analysis (PCA) is employed to visualize the distances between samples. In this method, data points (the samples) are projected onto a two-dimensional plane, 
+spreading out in the directions that account for the most variation. The x-axis represents the direction that separates the data points the most, labeled as PC1, while the y-axis indicates
+the second direction of greatest separation, labeled as PC2. The percentage of total variance captured in each direction is displayed in the axis labels. It is important to note that these
+percentages do not sum to 100% because additional dimensions contain the remaining variance, although each of these dimensions explains less variation than the two shown.
+
+### Dispersion Graph
+The dispersion graph provides an accurate estimate of the expected dispersion values for genes based on their expression strength. Initially, gene-wise maximum likelihood estimates (MLEs) 
+are calculated using only the data for each respective gene (represented by black dots). A curve (in red) is then fitted to these MLEs to capture the overall trend of dispersion-mean dependence. 
+This fitted curve serves as a prior mean for a second estimation round, resulting in the final maximum a posteriori (MAP) estimates of dispersion (indicated by arrowheads). 
+This process can be understood as shrinkage toward the red line. Black points circled in blue are identified as dispersion outliers and are not shrunk toward the prior, which would follow the dotted line.
+
+### MA Plot
+The MA plot visualizes the relationship between gene expression counts and the fold change between two conditions. The log2 fold change for a particular comparison is plotted on the y-axis,
+while the average of the counts normalized by the size factor is shown on the x-axis. This plot is used to identify gene expression changes between two different conditions (e.g., normal vs. treated) 
+in terms of log fold change (M) on the y-axis and the log of the mean expression counts of normal and treated samples (A) on the x-axis. Each gene is represented by a dot. 
+Genes with an adjusted p-value below a specified threshold (in this case, 0.1, which is the default) are highlighted in red. This plot is essentially a two-dimensional scatter plot 
+that helps visualize gene expression datasets.
+
+Genes with similar expression values in both normal and treated samples will cluster around the M=0 line, indicating no significant differences in expression between treatments.
+Points that deviate from the M=0 line indicate significant expression changes; genes that are upregulated will be above the M=0 line, while downregulated genes will be below it.
+
+## Filter Tool
+To extract the most differentially expressed genes resulting from the treatment, particularly those with an absolute fold change greater than 2, the Filter Tool can be utilized.
+Parameters:
+File: Specify the DESeq2 result file as the input for filtering.
+
+Condition: Set the condition to filter for genes with an adjusted p-value (c7) less than 0.05.
+Next, select only the genes with absolute fold changes (FC) greater than 2:
+
+Use Filter Tool:
+File: Input the file containing genes with significant adjusted p-values.
+Condition: Filter for genes where the absolute value of the fold change (abs(c3)) is greater than 1.
+
+This systematic filtering process allows for the identification of the most relevant differentially expressed genes in response to treatment, ensuring that only those with 
+significant changes are included in further analyses.
+
+""""""""""""""""""""""""""""""""""""""""
+
+
