@@ -13,10 +13,10 @@ Consequently, messenger RNA (mRNA) molecules have been the most extensively stud
 
 #RNA-SEQ:
 """
-RNA sequencing (RNA-SEQ) uses the capabilities of high-throughtput sequecning methods to provide insight into the transcriptome of a cell. Compared to previous Sanger sequecing And 
-microarray-based mehtods, RNA-SEq provides far higher coverage and greater resolution of the dynamic nature of the transcriptome .Beyond quantifying gene expression, the data genrated by RNA-SEQ 
+RNA sequencing (RNA-SEQ) uses the capabilities of high-throughtput sequening methods to provide insight into the transcriptome of a cell. Compared to previous Sanger sequecing And 
+microarray-based mehtods, RNA-SEq provides far higher coverage and greater resolution of the dynamic nature of the transcriptome. Beyond quantifying gene expression, the data genrated by RNA-SEQ 
 facilities the discovery of novel transcripts, identification of alternatively spliced genes, and detection of allele-specifie expression. Recent advances in the RNA-seQ WORKFLOW HAVE 
-enables researchers to further elucidate the functional complexity of the transcription. This techmological development eliminated many challanges posed  by hybridization-based 
+enables researchers to further elucidate the functional complexity of the transcription. This technological development eliminated many challanges posed  by hybridization-based 
 microarrays and sanger  sequecning based approaches that were previously used for measuring gene expression. A typical RNA-SEQ experiment consists of isolating RNA, 
 converting it to complementary DNA (cDNA), PREPARING THE SEQUECNING LIBRARY, and sequencing it on an NGS platform. All RNA-Seq library preparation methods involve the conversion of RNA to 
 complementary DNA (cDNA) because most sequencing technologies require DNA libraries. Most protocols for cDNA synthesis create libraries that are uniformly derived from each cDNA strand,
